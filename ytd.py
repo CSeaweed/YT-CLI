@@ -17,7 +17,7 @@ def get_video(video: YouTube, dir: pathlib.WindowsPath) -> bool:
     title: str = video.title
     
     while attempt <= 10: 
-        #print(f"Downloading.. attempt: {attempt}/10", end="\r")
+        print(f"Downloading.. attempt: {attempt}/10", end="\r")
         
         try:
             media = video.streams.get_highest_resolution()
@@ -35,15 +35,16 @@ def get_audio(video: YouTube, dir: pathlib.WindowsPath) -> bool:
     title: str = video.title
     
     while attempt <= 10: 
-        #print(f"Downloading.. attempt: {attempt}/10", end="\r")
+        print(f"Downloading.. attempt: {attempt}/10", end="\r")
         
-        
-        media = video.streams.filter(only_audio=True).first()
-        media = media.download(dir)
-        fix_suffix(media, "mp4", "mp3")
-        return True
-        attempt += 1
-        sleep(0.2)
+        try:
+            media = video.streams.filter(only_audio=True).first()
+            media = media.download(dir)
+            fix_suffix(media, "mp4", "mp3")
+            return True
+        except:
+            attempt += 1
+            sleep(0.2)
     
     # Only in reach if attempts run out 
     return False
